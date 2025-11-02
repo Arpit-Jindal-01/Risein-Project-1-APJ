@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Freighter Simple Test</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+            font-size: 20px;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 18px;
+            margin: 20px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .success { background: #d1fae5; }
+        .error { background: #fee2e2; }
+    </style>
+</head>
+<body>
+    <h1>Simple Freighter Test</h1>
+    <p id="status">Click button to test</p>
+    <button onclick="testFreighter()">Test Freighter Connection</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testFreighter() {
+            const resultDiv = document.getElementById('result');
+            const statusP = document.getElementById('status');
+            
+            statusP.textContent = 'Testing...';
+            console.log('Starting test...');
+            
+            // Method 1: Check if extension injected anything
+            console.log('window.freighterApi:', window.freighterApi);
+            console.log('window.freighter:', window.freighter);
+            
+            // Method 2: Try to import from CDN
+            try {
+                if (typeof freighterApi !== 'undefined') {
+                    console.log('✅ freighterApi found:', freighterApi);
+                    statusP.textContent = 'Found freighterApi! Requesting access...';
+                    
+                    const { requestAccess } = freighterApi;
+                    const publicKey = await requestAccess();
+                    
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = `<strong>SUCCESS!</strong><br>Public Key: ${publicKey}`;
+                    console.log('✅ Got public key:', publicKey);
+                } else {
+                    throw new Error('freighterApi is undefined');
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `<strong>FAILED</strong><br>${error.message}<br><br>
+                    <strong>Is Freighter installed?</strong><br>
+                    <a href="https://www.freighter.app/" target="_blank">Install Freighter</a><br><br>
+                    <strong>Browser:</strong> ${navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                                               navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+                                               navigator.userAgent.includes('Safari') ? 'Safari (NOT SUPPORTED!)' : 'Unknown'}`;
+                statusP.textContent = 'Failed - Check result below';
+            }
+        }
+        
+        // Auto-check on load
+        setTimeout(() => {
+            const status = document.getElementById('status');
+            if (typeof freighterApi !== 'undefined') {
+                status.textContent = '✅ Freighter API loaded! Click to connect';
+                status.style.color = 'green';
+            } else {
+                status.textContent = '❌ Freighter API NOT loaded - Extension not installed or wrong browser';
+                status.style.color = 'red';
+            }
+        }, 1000);
+    </script>
+    
+    <!-- Load Freighter API -->
+    <script src="https://unpkg.com/@stellar/freighter-api@1.7.1/dist/index.min.js"></script>
+</body>
+</html>

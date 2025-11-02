@@ -1,0 +1,29 @@
+# Dependencies
+target/
+node_modules/
+
+# Build outputs
+*.wasm
+*.optimized.wasm
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Stellar CLI
+.soroban/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Contract artifacts
+contract/target/

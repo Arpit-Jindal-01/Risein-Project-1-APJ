@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freighter Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Freighter Wallet Detection Test</h1>
+    
+    <div class="test-box">
+        <h3>Step 1: Check if Freighter Extension is Installed</h3>
+        <button onclick="checkFreighterInstalled()">Check Installation</button>
+        <div id="installResult" class="result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Step 2: Test Connection (Method 1 - Direct API)</h3>
+        <button onclick="testDirectConnection()">Test Direct API</button>
+        <div id="directResult" class="result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Step 3: Test Connection (Method 2 - Freighter API Library)</h3>
+        <button onclick="testLibraryConnection()">Test with Library</button>
+        <div id="libraryResult" class="result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Step 4: Manual Installation Check</h3>
+        <p>If all tests fail, Freighter might not be installed. Install it here:</p>
+        <button onclick="window.open('https://www.freighter.app/', '_blank')">
+            Install Freighter Extension
+        </button>
+    </div>
+    
+    <div class="test-box">
+        <h3>Debug Console</h3>
+        <div id="console" style="background: #1e293b; color: #10b981; padding: 15px; border-radius: 4px; font-family: monospace; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- Freighter API Library -->
+    <script src="https://unpkg.com/@stellar/freighter-api@1.7.1/dist/index.min.js"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const consoleDiv = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            console.log(message);
+        }
+
+        async function checkFreighterInstalled() {
+            log('🔍 Checking Freighter installation...');
+            const resultDiv = document.getElementById('installResult');
+            
+            try {
+                // Method 1: Check window object
+                const hasFreighterApi = typeof window.freighterApi !== 'undefined';
+                const hasIsConnected = hasFreighterApi && typeof window.freighterApi.isConnected === 'function';
+                
+                log(`window.freighterApi exists: ${hasFreighterApi}`);
+                log(`window.freighterApi.isConnected exists: ${hasIsConnected}`);
+                
+                if (hasIsConnected) {
+                    const isConnected = await window.freighterApi.isConnected();
+                    log(`isConnected result: ${isConnected}`);
+                    
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Freighter is installed! (Connected: ${isConnected})`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '❌ Freighter API not detected. Please install Freighter extension.';
+                    log('❌ Freighter not found');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`);
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testDirectConnection() {
+            log('🔌 Testing direct connection...');
+            const resultDiv = document.getElementById('directResult');
+            
+            try {
+                if (typeof window.freighterApi === 'undefined') {
+                    throw new Error('Freighter API not available');
+                }
+                
+                log('Calling getPublicKey()...');
+                const publicKey = await window.freighterApi.getPublicKey();
+                
+                log(`✅ Got public key: ${publicKey}`);
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Connected! Public Key: ${publicKey.substring(0, 8)}...${publicKey.substring(publicKey.length - 8)}`;
+                
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`);
+                resultDiv.className = 'result error';
+                
+                if (error.message.includes('User declined')) {
+                    resultDiv.innerHTML = '❌ You declined the connection request in Freighter popup';
+                } else {
+                    resultDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+                }
+            }
+        }
+
+        async function testLibraryConnection() {
+            log('📚 Testing with Freighter API library...');
+            const resultDiv = document.getElementById('libraryResult');
+            
+            try {
+                if (typeof freighterApi === 'undefined') {
+                    throw new Error('Freighter API library not loaded');
+                }
+                
+                log('Calling freighterApi.getPublicKey()...');
+                const publicKey = await freighterApi.getPublicKey();
+                
+                log(`✅ Got public key: ${publicKey}`);
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Connected! Public Key: ${publicKey.substring(0, 8)}...${publicKey.substring(publicKey.length - 8)}`;
+                
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`);
+                resultDiv.className = 'result error';
+                
+                if (error.message.includes('User declined')) {
+                    resultDiv.innerHTML = '❌ You declined the connection request in Freighter popup';
+                } else {
+                    resultDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+                }
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            log('🚀 Page loaded, running auto-check...');
+            setTimeout(checkFreighterInstalled, 1000);
+        });
+    </script>
+</body>
+</html>

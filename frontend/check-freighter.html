@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Freighter Check</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .box {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        .message {
+            font-size: 20px;
+            margin: 15px 0;
+        }
+        .steps {
+            text-align: left;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .steps li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        a {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Freighter Installation Guide</h1>
+    
+    <div class="box">
+        <div class="status" id="status">⏳</div>
+        <div class="message" id="message">Checking...</div>
+        <button onclick="location.reload()">🔄 Refresh & Check Again</button>
+    </div>
+
+    <div class="box steps">
+        <h2>📋 Installation Steps:</h2>
+        <ol>
+            <li><strong>Install Freighter:</strong><br>
+                <a href="https://www.freighter.app/" target="_blank">Click here to install Freighter</a>
+            </li>
+            <li><strong>After installing:</strong><br>
+                Close ALL browser tabs and windows
+            </li>
+            <li><strong>Reopen browser:</strong><br>
+                Start a fresh browser session
+            </li>
+            <li><strong>Set up wallet:</strong><br>
+                Click the Freighter icon (🚀) in your browser toolbar<br>
+                Create wallet or import existing one
+            </li>
+            <li><strong>Switch to TESTNET:</strong><br>
+                Settings ⚙️ → Network → Select "TESTNET"
+            </li>
+            <li><strong>Return here:</strong><br>
+                Come back to this page and click "Refresh & Check Again"
+            </li>
+        </ol>
+    </div>
+
+    <div class="box">
+        <h3>🎯 Browser Compatibility</h3>
+        <p>Freighter works on:</p>
+        <p>✅ Chrome • ✅ Brave • ✅ Firefox • ✅ Edge</p>
+        <p>❌ Safari (NOT supported)</p>
+    </div>
+
+    <script>
+        function checkFreighter() {
+            const statusDiv = document.getElementById('status');
+            const messageDiv = document.getElementById('message');
+            
+            // Wait a moment for extensions to load
+            setTimeout(() => {
+                // Check multiple ways
+                const method1 = typeof window.freighterApi !== 'undefined';
+                const method2 = typeof window.freighter !== 'undefined';
+                const method3 = document.querySelector('[data-freighter-installed]') !== null;
+                
+                console.log('Method 1 (freighterApi):', method1);
+                console.log('Method 2 (freighter):', method2);
+                console.log('Method 3 (DOM marker):', method3);
+                console.log('All window keys:', Object.keys(window).filter(k => k.toLowerCase().includes('freighter')));
+                
+                if (method1 || method2 || method3) {
+                    statusDiv.textContent = '✅';
+                    messageDiv.innerHTML = '<strong>SUCCESS!</strong><br>Freighter is installed!<br><br>Now click below to open your app:';
+                    
+                    const openAppBtn = document.createElement('button');
+                    openAppBtn.textContent = '🎉 Open Prediction Market App';
+                    openAppBtn.onclick = () => {
+                        window.location.href = 'index.html';
+                    };
+                    messageDiv.appendChild(document.createElement('br'));
+                    messageDiv.appendChild(openAppBtn);
+                } else {
+                    statusDiv.textContent = '❌';
+                    messageDiv.innerHTML = '<strong>NOT INSTALLED</strong><br>Please follow the steps below<br><br><strong>Important:</strong> After installing, you MUST close ALL browser windows and reopen!';
+                }
+            }, 2000); // Wait 2 seconds for extensions to load
+        }
+        
+        window.addEventListener('load', checkFreighter);
+    </script>
+</body>
+</html>
