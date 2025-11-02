@@ -2,6 +2,20 @@
 
 **Decentralized prediction markets with immutable time-locked commitments on Stellar Soroban**
 
+[![Stellar](https://img.shields.io/badge/Stellar-Soroban-blue)](https://stellar.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Network](https://img.shields.io/badge/Network-Testnet-orange)](https://stellar.expert/explorer/testnet)
+
+---
+
+## 🚀 **Live Deployment**
+
+**Contract ID:** `CC2OBONLPDUPDMWJ34E77F2YKECLCWC5XS26EZG2KVV5OAS3LW4ZP2MD`
+
+**View on Stellar Expert:** [Contract Explorer](https://stellar.expert/explorer/testnet/contract/CC2OBONLPDUPDMWJ34E77F2YKECLCWC5XS26EZG2KVV5OAS3LW4ZP2MD)
+
+![Contract on Stellar Expert](screenshots/stellar-expert-contract.png)
+
 ---
 
 ## 🎯 **What is TimeLock Predictions?**
