@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Debug - TimeLock Predictions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log {
+            background: #1e293b;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .info-value {
+            color: #1e293b;
+            word-break: break-all;
+        }
+
+        .code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Freighter Wallet Debug</h1>
+
+        <div class="section">
+            <h2>1. Freighter Detection</h2>
+            <div id="freighterStatus" class="status info">Checking...</div>
+            <div class="info-grid">
+                <span class="info-label">Freighter API:</span>
+                <span id="freighterApi" class="info-value">-</span>
+                <span class="info-label">Version:</span>
+                <span id="freighterVersion" class="info-value">-</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Connection Test</h2>
+            <button id="testConnection">🔗 Test Connection</button>
+            <button id="requestAccess">🔑 Request Access</button>
+            <button id="getNetwork">🌐 Check Network</button>
+            <div id="connectionStatus" class="status info" style="display: none;">Not tested</div>
+            <div class="info-grid" id="walletInfo" style="display: none;">
+                <span class="info-label">Address:</span>
+                <span id="walletAddress" class="info-value">-</span>
+                <span class="info-label">Network:</span>
+                <span id="networkInfo" class="info-value">-</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Browser Info</h2>
+            <div class="info-grid">
+                <span class="info-label">User Agent:</span>
+                <span id="userAgent" class="info-value">-</span>
+                <span class="info-label">Platform:</span>
+                <span id="platform" class="info-value">-</span>
+                <span class="info-label">Location:</span>
+                <span id="location" class="info-value">-</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Console Log</h2>
+            <button id="clearLog">🗑️ Clear Log</button>
+            <div id="consoleLog" class="log">Waiting for actions...</div>
+        </div>
+    </div>
+
+    <!-- Freighter API -->
+    <script src="https://unpkg.com/@stellar/freighter-api@1.7.1/dist/index.min.js"></script>
+
+    <script>
+        // Log function
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEl = document.getElementById('consoleLog');
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+            logEl.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(message);
+        }
+
+        // Initialize
+        window.addEventListener('load', async () => {
+            log('Page loaded, checking Freighter...');
+
+            // Browser info
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('platform').textContent = navigator.platform;
+            document.getElementById('location').textContent = window.location.href;
+
+            // Wait for Freighter to load
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Check Freighter
+            const freighterStatus = document.getElementById('freighterStatus');
+            const freighterApiEl = document.getElementById('freighterApi');
+            const freighterVersion = document.getElementById('freighterVersion');
+
+            if (typeof freighterApi === 'undefined') {
+                freighterStatus.textContent = '❌ Freighter NOT detected';
+                freighterStatus.className = 'status error';
+                freighterApiEl.textContent = 'undefined';
+                log('Freighter API not found', 'error');
+                
+                // Check if extension exists but not loaded
+                setTimeout(() => {
+                    if (typeof freighterApi !== 'undefined') {
+                        log('Freighter loaded after delay!', 'success');
+                        location.reload();
+                    }
+                }, 2000);
+            } else {
+                freighterStatus.textContent = '✅ Freighter detected!';
+                freighterStatus.className = 'status success';
+                freighterApiEl.textContent = 'Available';
+                
+                // Try to get version
+                try {
+                    const methods = Object.keys(freighterApi).join(', ');
+                    freighterVersion.textContent = methods || 'Unknown';
+                    log(`Freighter API loaded. Methods: ${methods}`, 'success');
+                } catch (e) {
+                    log(`Error checking Freighter: ${e.message}`, 'error');
+                }
+            }
+        });
+
+        // Test connection
+        document.getElementById('testConnection').addEventListener('click', async () => {
+            log('Testing connection...');
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.style.display = 'block';
+
+            try {
+                if (typeof freighterApi === 'undefined') {
+                    throw new Error('Freighter not available');
+                }
+
+                const { setAllowed } = freighterApi;
+                const isAllowed = await setAllowed();
+                
+                if (isAllowed) {
+                    statusEl.textContent = '✅ Previously connected!';
+                    statusEl.className = 'status success';
+                    log('Connection check: Previously connected', 'success');
+                } else {
+                    statusEl.textContent = '⚠️ Not connected yet. Click "Request Access".';
+                    statusEl.className = 'status info';
+                    log('Connection check: Not connected', 'info');
+                }
+            } catch (error) {
+                statusEl.textContent = `❌ Error: ${error.message}`;
+                statusEl.className = 'status error';
+                log(`Connection test failed: ${error.message}`, 'error');
+            }
+        });
+
+        // Request access
+        document.getElementById('requestAccess').addEventListener('click', async () => {
+            log('Requesting wallet access...');
+            const statusEl = document.getElementById('connectionStatus');
+            const walletInfo = document.getElementById('walletInfo');
+            statusEl.style.display = 'block';
+
+            try {
+                if (typeof freighterApi === 'undefined') {
+                    throw new Error('Freighter not installed');
+                }
+
+                const { requestAccess } = freighterApi;
+                log('Opening Freighter popup...');
+                
+                const publicKey = await requestAccess();
+                
+                document.getElementById('walletAddress').textContent = publicKey;
+                statusEl.textContent = `✅ Connected: ${publicKey.slice(0, 8)}...${publicKey.slice(-4)}`;
+                statusEl.className = 'status success';
+                walletInfo.style.display = 'grid';
+                
+                log(`✅ Successfully connected: ${publicKey}`, 'success');
+                
+            } catch (error) {
+                statusEl.textContent = `❌ Error: ${error.message}`;
+                statusEl.className = 'status error';
+                log(`❌ Access request failed: ${error.message}`, 'error');
+                
+                if (error.message.includes('User declined')) {
+                    log('User declined the connection request', 'error');
+                }
+            }
+        });
+
+        // Get network
+        document.getElementById('getNetwork').addEventListener('click', async () => {
+            log('Checking network...');
+            try {
+                if (typeof freighterApi === 'undefined') {
+                    throw new Error('Freighter not installed');
+                }
+
+                const { getNetwork } = freighterApi;
+                const network = await getNetwork();
+                
+                document.getElementById('networkInfo').textContent = network;
+                log(`Network: ${network}`, network === 'TESTNET' ? 'success' : 'error');
+                
+                if (network !== 'TESTNET') {
+                    log('⚠️ Please switch to TESTNET in Freighter settings', 'error');
+                }
+            } catch (error) {
+                log(`Network check failed: ${error.message}`, 'error');
+            }
+        });
+
+        // Clear log
+        document.getElementById('clearLog').addEventListener('click', () => {
+            document.getElementById('consoleLog').textContent = 'Log cleared.\n';
+        });
+    </script>
+</body>
+</html>

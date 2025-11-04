@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Freighter Debug</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #fff;
+        }
+        .log {
+            padding: 10px;
+            margin: 5px 0;
+            background: #2d2d2d;
+            border-left: 3px solid #4CAF50;
+        }
+        .error {
+            border-left-color: #f44336;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Freighter Debug Page</h1>
+    <p>This page tests if Freighter extension is working</p>
+    
+    <button onclick="checkExtension()">1. Check Extension</button>
+    <button onclick="testGetKey()">2. Get Public Key</button>
+    <button onclick="clearLogs()">Clear</button>
+    
+    <div id="logs"></div>
+    
+    <script>
+        const logs = document.getElementById('logs');
+        
+        function log(msg, isError = false) {
+            const div = document.createElement('div');
+            div.className = 'log' + (isError ? ' error' : '');
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logs.appendChild(div);
+            console.log(msg);
+        }
+        
+        function clearLogs() {
+            logs.innerHTML = '';
+        }
+        
+        function checkExtension() {
+            clearLogs();
+            log('Checking for Freighter extension...');
+            
+            log('window.freighterApi: ' + typeof window.freighterApi);
+            log('window.freighter: ' + typeof window.freighter);
+            
+            if (window.freighterApi) {
+                log('✅ Found window.freighterApi');
+                log('Methods: ' + Object.keys(window.freighterApi).join(', '));
+            } else if (window.freighter) {
+                log('✅ Found window.freighter');
+                log('Methods: ' + Object.keys(window.freighter).join(', '));
+            } else {
+                log('❌ Freighter NOT detected!', true);
+                log('Please install: https://www.freighter.app/', true);
+            }
+        }
+        
+        async function testGetKey() {
+            clearLogs();
+            log('Testing public key retrieval...');
+            
+            const api = window.freighterApi || window.freighter;
+            
+            if (!api) {
+                log('❌ Freighter not available', true);
+                return;
+            }
+            
+            try {
+                log('Calling getPublicKey()...');
+                const key = await api.getPublicKey();
+                log('✅ SUCCESS! Public Key: ' + key);
+            } catch (error) {
+                log('❌ ERROR: ' + error.message, true);
+            }
+        }
+        
+        // Auto-check on load
+        setTimeout(checkExtension, 500);
+    </script>
+</body>
+</html>

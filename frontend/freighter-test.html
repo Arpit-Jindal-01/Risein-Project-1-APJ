@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 Freighter Wallet Connection Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .test-section h2 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success {
+            border-left: 4px solid #28a745;
+            color: #28a745;
+        }
+
+        .error {
+            border-left: 4px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .info {
+            border-left: 4px solid #17a2b8;
+            color: #17a2b8;
+        }
+
+        .warning {
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            background: #fff3cd;
+        }
+
+        .address {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+
+        .step-indicator {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+
+        .install-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .install-link:hover {
+            text-decoration: underline;
+        }
+
+        .status-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Freighter Wallet Test</h1>
+        <p class="subtitle">Test your Freighter wallet connection before using TimeLock Predictions</p>
+
+        <!-- Step 1: Check Installation -->
+        <div class="test-section">
+            <h2><span class="step-indicator">1</span>Check Freighter Installation</h2>
+            <button class="btn" onclick="checkInstallation()">Check if Freighter is Installed</button>
+            <div id="installResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Step 2: Request Access -->
+        <div class="test-section">
+            <h2><span class="step-indicator">2</span>Connect to Freighter</h2>
+            <button class="btn" id="connectBtn" onclick="connectWallet()" disabled>Connect Wallet</button>
+            <div id="connectResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Step 3: Display Address -->
+        <div class="test-section">
+            <h2><span class="step-indicator">3</span>Your Wallet Address</h2>
+            <div id="addressDisplay" class="result info" style="display: none;">
+                <div>
+                    <strong>Connected Address:</strong>
+                    <div class="address" id="walletAddress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Network Info -->
+        <div class="test-section">
+            <h2><span class="step-indicator">4</span>Network Information</h2>
+            <button class="btn" id="networkBtn" onclick="checkNetwork()" disabled>Check Network</button>
+            <div id="networkResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Status Box -->
+        <div class="status-box warning" id="statusBox" style="display: none;">
+            <strong>⚠️ Need Help?</strong>
+            <p style="margin-top: 10px;">Make sure you have Freighter installed and are on the Stellar Testnet network.</p>
+            <a href="https://www.freighter.app/" target="_blank" class="install-link">📦 Install Freighter Extension →</a>
+        </div>
+
+        <!-- Success Box -->
+        <div class="status-box success" id="successBox" style="display: none;">
+            <strong>✅ Wallet Connected Successfully!</strong>
+            <p style="margin-top: 10px;">Your Freighter wallet is working correctly. You can now use the TimeLock Predictions app!</p>
+            <a href="index.html" class="install-link">🚀 Open TimeLock Predictions →</a>
+        </div>
+    </div>
+
+    <!-- Load Freighter API -->
+    <script src="https://unpkg.com/@stellar/freighter-api@1.7.1/dist/index.min.js"></script>
+
+    <script>
+        let connectedAddress = null;
+        const { requestAccess, getPublicKey, getNetworkDetails, isConnected } = freighterApi;
+
+        // Check if Freighter is installed
+        async function checkInstallation() {
+            const resultDiv = document.getElementById('installResult');
+            const connectBtn = document.getElementById('connectBtn');
+            
+            resultDiv.style.display = 'flex';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '⏳ Checking...';
+
+            try {
+                if (typeof freighterApi === 'undefined') {
+                    throw new Error('Freighter API not found');
+                }
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = '✅ Freighter is installed and ready!';
+                connectBtn.disabled = false;
+                
+                console.log('✅ Freighter API:', freighterApi);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    ❌ Freighter not found!<br>
+                    <small>${error.message}</small>
+                `;
+                document.getElementById('statusBox').style.display = 'block';
+                console.error('❌ Error:', error);
+            }
+        }
+
+        // Connect to Freighter wallet
+        async function connectWallet() {
+            const resultDiv = document.getElementById('connectResult');
+            const addressDiv = document.getElementById('addressDisplay');
+            const addressText = document.getElementById('walletAddress');
+            const networkBtn = document.getElementById('networkBtn');
+            
+            resultDiv.style.display = 'flex';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '⏳ Opening Freighter... Please approve the connection request';
+
+            try {
+                // Request access to the wallet
+                const publicKey = await requestAccess();
+                
+                connectedAddress = publicKey;
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = '✅ Wallet connected successfully!';
+                
+                addressDiv.style.display = 'block';
+                addressText.textContent = publicKey;
+                
+                networkBtn.disabled = false;
+                
+                console.log('✅ Connected to:', publicKey);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                
+                if (error.toString().includes('User declined')) {
+                    resultDiv.innerHTML = '❌ Connection declined. Please click "Connect" in the Freighter popup.';
+                } else {
+                    resultDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+                }
+                
+                document.getElementById('statusBox').style.display = 'block';
+                console.error('❌ Connection error:', error);
+            }
+        }
+
+        // Check network information
+        async function checkNetwork() {
+            const resultDiv = document.getElementById('networkResult');
+            
+            resultDiv.style.display = 'flex';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '⏳ Checking network...';
+
+            try {
+                const network = await getNetworkDetails();
+                const isConn = await isConnected();
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <div style="text-align: left; width: 100%;">
+                        <strong>✅ Network Details:</strong><br>
+                        <div style="margin-top: 10px;">
+                            📡 Network: <strong>${network.network}</strong><br>
+                            🔌 Connected: <strong>${isConn ? 'Yes' : 'No'}</strong><br>
+                            🔑 Address: <strong>${connectedAddress ? connectedAddress.substring(0, 10) + '...' : 'N/A'}</strong>
+                        </div>
+                    </div>
+                `;
+                
+                // Show success box
+                document.getElementById('successBox').style.display = 'block';
+                document.getElementById('statusBox').style.display = 'none';
+                
+                console.log('✅ Network:', network);
+                console.log('✅ Connected:', isConn);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Error checking network: ${error.message}`;
+                console.error('❌ Network error:', error);
+            }
+        }
+
+        // Auto-check installation on page load
+        window.addEventListener('load', () => {
+            console.log('🔮 Freighter Test Page Loaded');
+            setTimeout(() => {
+                checkInstallation();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

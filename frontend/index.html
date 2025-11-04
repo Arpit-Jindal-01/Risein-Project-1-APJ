@@ -3,25 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔮 TimeLock Predictions</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>🔮 TimeLock Predictions - Future Market Predictions</title>
+    <link rel="stylesheet" href="styles_animated.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Rising Logo Animation -->
+    <div class="logo-container" id="logoContainer">
+        <div class="rising-logo">
+            <div class="logo-icon">🔮</div>
+            <h1>TimeLock Predictions</h1>
+            <p class="tagline">Lock Your Predictions. Win Your Future.</p>
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
     <div class="container">
-        <!-- Header -->
+        <!-- Important Notice Banner -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <h3 style="margin: 0 0 10px 0; font-size: 18px;">⚡ How Blockchain Transactions Work</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
+                <div>
+                    <strong>🎨 Frontend (This Website):</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Shows visual balance updates</li>
+                        <li>Generates CLI commands</li>
+                        <li>Provides UI/UX for predictions</li>
+                        <li><strong>Does NOT deduct real XLM</strong></li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>⛓️ Blockchain (Stellar Testnet):</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Stores actual predictions</li>
+                        <li>Deducts real XLM from wallet</li>
+                        <li>Requires CLI commands to interact</li>
+                        <li><strong>Source of truth for all data</strong></li>
+                    </ul>
+                </div>
+            </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <strong>💡 To actually interact with the blockchain:</strong> Copy the CLI commands shown in modals and run them in your terminal with Stellar CLI installed.
+            </div>
+            <div style="background: rgba(255,193,7,0.3); padding: 8px; border-radius: 8px; margin-top: 8px; font-size: 13px;">
+                <strong>⚠️ Common Issues:</strong> 
+                • Need wallet setup? Run: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px;">stellar keys add wallet --secret-key YOUR_KEY</code>
+                • Need XLM? Run: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px;">curl "https://friendbot.stellar.org?addr=$(stellar keys address wallet)"</code>
+            </div>
+        </div>        <!-- Header -->
         <header class="header">
-            <h1>🔮 TimeLock Predictions</h1>
-            <p class="subtitle">Blockchain Prediction Markets with Time-Locked Commitments</p>
-            <button id="connectWallet" class="btn btn-primary">
-                Connect Freighter Wallet
-            </button>
-            <div id="walletInfo" class="wallet-info" style="display: none;">
-                <span id="walletAddress"></span>
-                <button id="disconnectWallet" class="btn btn-secondary">Disconnect</button>
+            <div class="header-logo">
+                <span class="icon">🔮</span>
+            </div>
+            <h1>TimeLock Predictions</h1>
+            <p class="subtitle">Decentralized Prediction Markets with Time-Locked Commitments on Stellar</p>
+            
+            <div class="wallet-section">
+                <a href="analytics.html" class="btn btn-secondary" style="margin-right: 10px; text-decoration: none;">
+                    📊 Analytics
+                </a>
+                <a href="profile.html" class="btn btn-secondary" style="margin-right: 10px; text-decoration: none;">
+                    👤 Profile
+                </a>
+                <button id="connectWallet" class="btn btn-primary">
+                    🔗 Connect Freighter Wallet
+                </button>
+                <button id="connectManually" class="btn btn-secondary" style="margin-left: 10px;">
+                    🔑 Enter Public Key
+                </button>
+                <div id="walletInfo" class="wallet-info" style="display: none;">
+                    <span>💎</span>
+                    <span id="walletAddress"></span>
+                    <span id="walletBalance" style="margin-left: 15px; font-weight: bold; color: #28a745;">0 XLM</span>
+                    <button id="refreshBalance" class="btn btn-secondary" style="padding: 10px 15px; margin-left: 10px;" title="Refresh Balance">
+                        🔄
+                    </button>
+                    <button id="disconnectWallet" class="btn btn-secondary">Disconnect</button>
+                </div>
             </div>
         </header>
 
-        <!-- Stats -->
+        <!-- Enhanced Stats -->
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value" id="totalPredictions">0</div>
@@ -29,21 +106,33 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="activePredictions">0</div>
-                <div class="stat-label">Active</div>
+                <div class="stat-label">Active Now</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="resolvedPredictions">0</div>
+                <div class="stat-label">Resolved</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="treasuryBalance">0 XLM</div>
                 <div class="stat-label">Treasury</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalBurned">0 XLM</div>
+                <div class="stat-label">Burned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalVolume">0 XLM</div>
+                <div class="stat-label">Total Volume</div>
+            </div>
         </div>
 
         <!-- Create Prediction -->
         <div class="section">
-            <h2>➕ Create New Prediction</h2>
+            <h2>✨ Create New Prediction</h2>
             <div class="card">
-                <form id="createPredictionForm">
+                <form id="createPredictionForm" class="prediction-form">
                     <div class="form-group">
-                        <label for="question">Question (10-200 characters)</label>
+                        <label for="question">🔮 Question (10-200 characters)</label>
                         <input 
                             type="text" 
                             id="question" 
@@ -54,7 +143,7 @@
                         >
                     </div>
                     <div class="form-group">
-                        <label for="unlockTime">Unlock Date & Time</label>
+                        <label for="unlockTime">⏱️ Unlock Date & Time</label>
                         <input 
                             type="datetime-local" 
                             id="unlockTime" 
@@ -62,18 +151,19 @@
                         >
                     </div>
                     <div class="form-group">
-                        <label for="initialChoice">Your Initial Prediction</label>
+                        <label for="initialChoice">🎯 Your Initial Prediction</label>
                         <select id="initialChoice" required>
                             <option value="true">✅ YES</option>
                             <option value="false">❌ NO</option>
                         </select>
                     </div>
                     <div class="info-box">
-                        <p><strong>Cost:</strong> 50 XLM creation fee + 100 XLM initial stake = 150 XLM total</p>
-                        <p><strong>Note:</strong> You must stake on your own prediction</p>
+                        <p>💎 <strong>Cost:</strong> 50 XLM creation fee + 100 XLM initial stake = <strong>150 XLM total</strong></p>
+                        <p>📌 <strong>Note:</strong> You must stake on your own prediction</p>
                     </div>
                     <button type="submit" class="btn btn-primary btn-large">
-                        Create Prediction (150 XLM)
+                        <span>Create Prediction</span>
+                        <span class="btn-icon">🚀</span>
                     </button>
                 </form>
             </div>
@@ -83,13 +173,77 @@
         <div class="section">
             <h2>📊 Active Predictions</h2>
             <div id="predictionsContainer" class="predictions-grid">
-                <div class="loading">Loading predictions...</div>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading predictions...</p>
+                </div>
             </div>
         </div>
 
         <!-- Status Messages -->
         <div id="statusMessage" class="status-message" style="display: none;"></div>
     </div>
+
+    <!-- Manual Public Key Entry Modal -->
+    <div id="publicKeyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closePublicKeyModal()">&times;</span>
+            <h2>🔑 Enter Your Public Key</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Connect to your Stellar wallet by entering your public key (starts with G...)
+            </p>
+            
+            <div class="form-group">
+                <label for="manualPublicKey">Stellar Public Key</label>
+                <input 
+                    type="text" 
+                    id="manualPublicKey" 
+                    placeholder="G... (56 characters)"
+                    style="font-family: monospace; font-size: 14px;"
+                    maxlength="56"
+                />
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    Example: GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                </small>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="connectWithPublicKey()" class="btn btn-primary" style="flex: 1;">
+                    ✅ Connect
+                </button>
+                <button onclick="closePublicKeyModal()" class="btn btn-secondary" style="flex: 1;">
+                    ❌ Cancel
+                </button>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                <strong>✅ Full Functionality:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #155724;">
+                    <li>View all predictions and data</li>
+                    <li>Create new predictions</li>
+                    <li>Stake on outcomes</li>
+                    <li>Freighter will prompt you to sign transactions</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <strong>🔒 Security Note:</strong>
+                <p style="margin: 5px 0 0 0; color: #856404;">
+                    Public keys are safe to share. Never share your private key or seed phrase!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hide Logo After Animation -->
+    <script>
+        setTimeout(() => {
+            const logo = document.querySelector('.logo-container');
+            if (logo) {
+                logo.style.display = 'none';
+            }
+        }, 4000);
+    </script>
 
     <!-- Contract Config -->
     <script>
@@ -100,15 +254,88 @@
             horizonUrl: 'https://horizon-testnet.stellar.org',
             nativeTokenId: 'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC'
         };
+        
+        // Build contract transaction for Freighter to sign
+        function buildContractTransaction(method, params) {
+            console.log(`🔨 Building transaction for ${method}:`, params);
+            
+            // For now, return a simple instruction object
+            // Freighter will handle the actual transaction building
+            return {
+                method: method,
+                params: params,
+                contractId: CONFIG.contractId,
+                network: 'TESTNET'
+            };
+        }
     </script>
 
     <!-- Stellar SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.3.0/stellar-sdk.min.js"></script>
     
-    <!-- Freighter API -->
-    <script src="https://unpkg.com/@stellar/freighter-api@1.7.1/dist/index.min.js"></script>
+    <!-- Freighter API - Initialize from window or CDN -->
+    <script>
+        // Wait for Freighter to be injected by the browser extension
+        let freighterApi;
+        let freighterReady = false;
+        
+        async function initFreighter() {
+            console.log('🔍 Initializing Freighter API...');
+            
+            // Check multiple times as extension takes time to inject
+            for (let i = 0; i < 10; i++) {
+                freighterApi = window.freighterApi || window.freighter;
+                
+                if (freighterApi) {
+                    console.log('✅ Freighter API found in window');
+                    freighterReady = true;
+                    return true;
+                }
+                
+                console.log(`⏳ Waiting for Freighter... (attempt ${i + 1}/10)`);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // If still not found, try CDN as fallback
+            console.warn('⚠️ Freighter not detected in window, attempting CDN load...');
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js';
+                script.onload = () => {
+                    freighterApi = window.freighterApi || window.freighter;
+                    if (freighterApi) {
+                        console.log('✅ Freighter API loaded from CDN');
+                        freighterReady = true;
+                        resolve(true);
+                    } else {
+                        console.error('❌ Freighter API not available after CDN load');
+                        resolve(false);
+                    }
+                };
+                script.onerror = () => {
+                    console.error('❌ Failed to load Freighter API from CDN');
+                    resolve(false);
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', initFreighter);
+    </script>
+    
+    <!-- Notification System -->
+    <script src="notifications.js"></script>
+    
+    <!-- Social Features -->
+    <script src="social.js"></script>
     
     <!-- Main App -->
-    <script src="app.js"></script>
+    <script src="app_enhanced.js"></script>
+    
+    <!-- Notification Toggle Button -->
+    <button class="notification-toggle" onclick="notificationManager.requestPermission()" title="Enable Notifications">
+        🔔
+    </button>
 </body>
 </html>

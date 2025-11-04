@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Deduction Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .balance-display {
+            background: #f0f0f0;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .balance-amount {
+            font-size: 48px;
+            font-weight: bold;
+            color: #28a745;
+            transition: all 0.3s ease;
+        }
+        .balance-amount.animating {
+            animation: balanceDecrease 0.6s ease;
+        }
+        @keyframes balanceDecrease {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); color: #dc3545; }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-create {
+            background: #667eea;
+            color: white;
+        }
+        .btn-stake {
+            background: #28a745;
+            color: white;
+        }
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .action-log {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .feature-list {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .feature-list ul {
+            margin: 10px 0 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💸 Balance Deduction Feature</h1>
+        
+        <div class="feature-list">
+            <strong>✨ New Features:</strong>
+            <ul>
+                <li><strong>Live Balance Display</strong> - Shows XLM in wallet</li>
+                <li><strong>Instant Deduction</strong> - Balance updates immediately</li>
+                <li><strong>Animated Changes</strong> - Visual feedback on deductions</li>
+                <li><strong>Balance Checking</strong> - Prevents overspending</li>
+                <li><strong>Refresh Button</strong> - Sync with actual blockchain</li>
+            </ul>
+        </div>
+        
+        <div class="balance-display">
+            <div style="color: #666; margin-bottom: 10px;">Your Balance</div>
+            <div class="balance-amount" id="balance">10,000.00</div>
+            <div style="color: #666; margin-top: 10px;">XLM</div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="btn-create" onclick="createPrediction()">
+                🔮 Create Prediction (-150 XLM)
+            </button>
+            <button class="btn-stake" onclick="stake()">
+                💎 Stake 100 XLM
+            </button>
+            <button class="btn-stake" onclick="stake(500)">
+                💎 Stake 500 XLM
+            </button>
+            <button class="btn-reset" onclick="reset()">
+                🔄 Reset Balance
+            </button>
+        </div>
+        
+        <div class="action-log" id="log"></div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="index.html" style="display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 10px; font-weight: bold;">
+                🚀 Try on Main App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let balance = 10000;
+        const balanceEl = document.getElementById('balance');
+        const logEl = document.getElementById('log');
+        
+        function updateDisplay() {
+            balanceEl.textContent = balance.toFixed(2);
+            balanceEl.classList.add('animating');
+            setTimeout(() => balanceEl.classList.remove('animating'), 600);
+            
+            // Update color
+            if (balance < 100) {
+                balanceEl.style.color = '#dc3545';
+            } else if (balance < 500) {
+                balanceEl.style.color = '#ffc107';
+            } else {
+                balanceEl.style.color = '#28a745';
+            }
+        }
+        
+        function log(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const colors = {
+                info: '#8be9fd',
+                success: '#50fa7b',
+                error: '#ff5555',
+                warning: '#ffb86c'
+            };
+            logEl.innerHTML = `<div style="color: ${colors[type]}">[${time}] ${message}</div>` + logEl.innerHTML;
+        }
+        
+        function createPrediction() {
+            if (balance < 150) {
+                log('❌ Insufficient balance! Need 150 XLM', 'error');
+                alert('Insufficient balance! You need at least 150 XLM.');
+                return;
+            }
+            
+            balance -= 150;
+            updateDisplay();
+            log('✅ Prediction created! 150 XLM deducted (50 fee + 100 stake)', 'success');
+            log('   New balance: ' + balance.toFixed(2) + ' XLM', 'info');
+        }
+        
+        function stake(amount = 100) {
+            if (balance < amount) {
+                log(`❌ Insufficient balance! Need ${amount} XLM`, 'error');
+                alert(`Insufficient balance! You need at least ${amount} XLM.`);
+                return;
+            }
+            
+            balance -= amount;
+            updateDisplay();
+            log(`✅ Staked ${amount} XLM successfully!`, 'success');
+            log('   New balance: ' + balance.toFixed(2) + ' XLM', 'info');
+        }
+        
+        function reset() {
+            balance = 10000;
+            updateDisplay();
+            log('🔄 Balance reset to 10,000 XLM', 'warning');
+            logEl.innerHTML = '';
+        }
+        
+        // Initial log
+        log('💎 Demo started with 10,000 XLM', 'success');
+        log('Try the buttons above to see balance deduction in action!', 'info');
+    </script>
+</body>
+</html>

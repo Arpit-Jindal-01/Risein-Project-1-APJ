@@ -10,11 +10,11 @@
 
 ## 🚀 **Live Deployment**
 
+**🌐 Frontend:** [https://arpit-jindal-01.github.io/TimeLock-Predictions/](https://arpit-jindal-01.github.io/TimeLock-Predictions/)
+
 **Contract ID:** `CC2OBONLPDUPDMWJ34E77F2YKECLCWC5XS26EZG2KVV5OAS3LW4ZP2MD`
 
 **View on Stellar Expert:** [Contract Explorer](https://stellar.expert/explorer/testnet/contract/CC2OBONLPDUPDMWJ34E77F2YKECLCWC5XS26EZG2KVV5OAS3LW4ZP2MD)
-
-![Contract on Stellar Expert](screenshots/stellar-expert-contract.png)
 
 ---
 
@@ -28,12 +28,25 @@ Unlike traditional prediction markets where users can change their minds, TimeLo
 
 ## ✨ **Key Features**
 
+### **🔗 Smart Contract**
 - ✅ **Immutable Commitments** - Once staked, answers are locked on-chain forever
 - ✅ **Time-Locked** - Enforced by Stellar smart contracts
 - ✅ **Proportional Payouts** - Stake more, win more
 - ✅ **Anti-Spam** - Creation fee + initial stake requirement
 - ✅ **Transparent Revenue** - 5% platform fee, 70% creation fee to treasury
 - ✅ **Fully Tested** - 10/10 comprehensive unit tests passing
+
+### **🎨 Animated Frontend**
+- ✅ **Rising Logo** - Smooth animated entrance
+- ✅ **Floating Particles** - Continuous background animation
+- ✅ **Dual Wallet Connection** - Freighter + Manual public key
+- ✅ **Live XLM Balance** - Real-time from Stellar network
+- ✅ **Instant Deductions** - Visual balance updates (150 XLM per prediction)
+- ✅ **Analytics Dashboard** - 4 Chart.js visualizations
+- ✅ **User Profile** - History, stats, achievements
+- ✅ **Mobile Optimized** - Responsive design for all devices
+- ✅ **Notification System** - Browser + in-app notifications
+- ✅ **Social Sharing** - Twitter, Telegram, WhatsApp
 
 ---
 
@@ -43,11 +56,16 @@ Unlike traditional prediction markets where users can change their minds, TimeLo
 |-----------|------------|
 | **Blockchain** | Stellar Soroban (Testnet) |
 | **Smart Contract** | Rust |
+| **Frontend** | HTML5, CSS3, JavaScript |
+| **Wallet** | Freighter API |
+| **SDK** | Stellar SDK v11.3.0 |
+| **Charts** | Chart.js v4.4.0 |
 | **CLI Tool** | Stellar CLI v23.1.4 |
 | **Token** | XLM (Stellar Lumens) |
 | **Network** | Testnet |
 | **RPC URL** | https://soroban-testnet.stellar.org |
 | **Horizon URL** | https://horizon-testnet.stellar.org |
+| **Deployment** | GitHub Pages |
 
 ---
 
@@ -175,7 +193,48 @@ Winners → Call claim() function
 
 ---
 
-## 🏗️ **Installation & Setup**
+## � **Frontend Quick Start**
+
+### **1. Access Live Site**
+Visit: [https://arpit-jindal-01.github.io/TimeLock-Predictions/](https://arpit-jindal-01.github.io/TimeLock-Predictions/)
+
+### **2. Connect Wallet**
+
+**Option A: Freighter Wallet (Recommended)**
+1. Install [Freighter extension](https://www.freighter.app/)
+2. Create/import wallet
+3. Switch to Stellar Testnet
+4. Click "Connect Freighter Wallet"
+5. Approve connection
+
+**Option B: Manual Public Key**
+1. Click "Enter Public Key" button
+2. Paste your Stellar public key (G...)
+3. Click "Connect"
+4. Sign transactions with Freighter
+
+### **3. Get Test XLM**
+```bash
+curl "https://friendbot.stellar.org?addr=YOUR_PUBLIC_KEY"
+```
+
+### **4. Create Your First Prediction**
+1. Check your XLM balance (top right)
+2. Fill in prediction question
+3. Set unlock date (future)
+4. Choose your answer (Yes/No)
+5. Click "Create Prediction"
+6. Watch balance deduct 150 XLM instantly
+
+### **5. Explore Features**
+- **Analytics**: View charts and statistics
+- **Profile**: Check your prediction history
+- **Social**: Share predictions on Twitter/Telegram
+- **Mobile**: Works seamlessly on phones
+
+---
+
+## �🏗️ **Installation & Setup**
 
 ### **Prerequisites:**
 
@@ -360,25 +419,37 @@ stellar contract invoke \
 
 ---
 
-## 📈 **Future Enhancements**
+## 📈 **Development Progress**
 
-### **Phase 2:**
+### **Phase 1: Core Contract ✅ COMPLETE**
+- [x] Smart contract with 10 functions
+- [x] Comprehensive test suite (10/10 passing)
+- [x] Deployed to testnet
+- [x] Zero warnings build
+
+### **Phase 2: Frontend ✅ COMPLETE**
+- [x] Animated UI with rising logo
+- [x] Freighter wallet integration
+- [x] Manual public key login
+- [x] Live XLM balance display
+- [x] Instant balance deductions
+- [x] Analytics dashboard
+- [x] User profile page
+- [x] Mobile optimization
+- [x] Notification system
+- [x] Social sharing
+- [x] GitHub Pages deployment
+
+### **Phase 3: Future Enhancements**
 - [ ] Oracle integration (Chainlink) for automatic resolution
 - [ ] Community voting for subjective questions
 - [ ] Group predictions (friends compete)
 - [ ] Reputation system
-
-### **Phase 3:**
 - [ ] NFT achievement badges
 - [ ] Streak tracking (5-win, 10-win bonuses)
-- [ ] Leaderboard (best forecasters)
-- [ ] Prediction categories (Finance, Tech, Sports, Culture)
-
-### **Phase 4:**
-- [ ] Frontend (React + TypeScript + Vite)
-- [ ] Freighter wallet integration
-- [ ] Mobile app
-- [ ] Push notifications
+- [ ] Advanced leaderboard
+- [ ] Mainnet deployment
+- [ ] Custom domain
 
 ---
 

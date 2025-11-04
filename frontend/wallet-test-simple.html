@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Wallet Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 50px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔮 Simple Wallet Connection Test</h1>
+        
+        <div>
+            <button onclick="testFreighterInstalled()">1. Check Freighter Installed</button>
+            <button onclick="testConnect()">2. Connect Wallet</button>
+            <button onclick="testNetwork()">3. Check Network</button>
+            <button onclick="clearOutput()">Clear</button>
+        </div>
+        
+        <div id="output" class="output">Ready to test...</div>
+    </div>
+
+    <script>
+        // Freighter API - Load directly from window
+        let freighterApi;
+        
+        const output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = `[${timestamp}] ${message}\n`;
+            output.innerHTML += `<span class="${type}">${line}</span>`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearOutput() {
+            output.innerHTML = 'Ready to test...\n';
+        }
+        
+        async function testFreighterInstalled() {
+            log('Testing Freighter installation...', 'info');
+            
+            // Try to get Freighter from window
+            try {
+                // Check if Freighter extension injected the API
+                if (window.freighterApi) {
+                    freighterApi = window.freighterApi;
+                    log('✅ Found window.freighterApi', 'success');
+                } else if (window.freighter) {
+                    freighterApi = window.freighter;
+                    log('✅ Found window.freighter', 'success');
+                } else {
+                    // Try to import dynamically
+                    log('Attempting to load from CDN...', 'info');
+                    await loadFreighterFromCDN();
+                }
+                
+                if (!freighterApi) {
+                    log('❌ Freighter is NOT installed', 'error');
+                    log('Please install Freighter extension: https://www.freighter.app/', 'error');
+                    return false;
+                }
+                
+                log('✅ Freighter API loaded successfully', 'success');
+                log('Available methods: ' + Object.keys(freighterApi).join(', '), 'info');
+                
+                return true;
+            } catch (error) {
+                log('❌ Error: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        async function loadFreighterFromCDN() {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js';
+                script.onload = () => {
+                    if (window.freighterApi) {
+                        freighterApi = window.freighterApi;
+                        log('✅ Loaded from CDN', 'success');
+                        resolve();
+                    } else {
+                        reject(new Error('CDN loaded but freighterApi not found'));
+                    }
+                };
+                script.onerror = () => reject(new Error('Failed to load from CDN'));
+                document.head.appendChild(script);
+            });
+        }
+        
+        async function testConnect() {
+            log('\n=== Testing Wallet Connection ===', 'info');
+            
+            if (typeof freighterApi === 'undefined') {
+                log('❌ Freighter not loaded. Run test 1 first.', 'error');
+                return;
+            }
+            
+            try {
+                log('Calling freighterApi.isConnected()...', 'info');
+                const isConnected = await freighterApi.isConnected();
+                log('isConnected result: ' + isConnected, 'info');
+                
+                log('Calling freighterApi.requestAccess()...', 'info');
+                log('⏳ Check your Freighter popup...', 'info');
+                
+                const access = await freighterApi.requestAccess();
+                log('Access result: ' + JSON.stringify(access), 'success');
+                
+                if (access.error) {
+                    log('❌ Error: ' + access.error, 'error');
+                    return;
+                }
+                
+                log('Calling freighterApi.getPublicKey()...', 'info');
+                const publicKey = await freighterApi.getPublicKey();
+                log('✅ Connected!', 'success');
+                log('Public Key: ' + publicKey, 'success');
+                
+                return publicKey;
+                
+            } catch (error) {
+                log('❌ ERROR: ' + error.message, 'error');
+                log('Error details: ' + JSON.stringify(error), 'error');
+            }
+        }
+        
+        async function testNetwork() {
+            log('\n=== Testing Network ===', 'info');
+            
+            if (typeof freighterApi === 'undefined') {
+                log('❌ Freighter not loaded', 'error');
+                return;
+            }
+            
+            try {
+                const network = await freighterApi.getNetwork();
+                log('Current Network: ' + network, 'success');
+                
+                const networkDetails = await freighterApi.getNetworkDetails();
+                log('Network Details: ' + JSON.stringify(networkDetails, null, 2), 'info');
+                
+            } catch (error) {
+                log('❌ ERROR: ' + error.message, 'error');
+            }
+        }
+        
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('Page loaded. Freighter API ready.', 'success');
+                testFreighterInstalled();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
