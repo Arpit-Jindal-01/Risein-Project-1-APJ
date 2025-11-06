@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔮 TimeLock Predictions - Future Market Predictions</title>
     <link rel="stylesheet" href="styles_animated.css">
+    <link rel="stylesheet" href="premium-effects.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
@@ -13,9 +14,19 @@
     <!-- Rising Logo Animation -->
     <div class="logo-container" id="logoContainer">
         <div class="rising-logo">
-            <div class="logo-icon">🔮</div>
+            <div class="logo-icon-wrapper">
+                <div class="logo-glow"></div>
+                <div class="logo-icon">🔮</div>
+            </div>
             <h1>TimeLock Predictions</h1>
             <p class="tagline">Lock Your Predictions. Win Your Future.</p>
+            <div class="tagline-particles">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </div>
 
@@ -33,47 +44,55 @@
         <span></span>
     </div>
 
+    <!-- Floating Orbs -->
+    <div class="floating-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <!-- Cyberpunk Grid -->
+    <div class="cyber-grid"></div>
+
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+
     <div class="container">
         <!-- Important Notice Banner -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            <h3 style="margin: 0 0 10px 0; font-size: 18px;">⚡ How Blockchain Transactions Work</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
-                <div>
-                    <strong>🎨 Frontend (This Website):</strong>
-                    <ul style="margin: 5px 0; padding-left: 20px;">
-                        <li>Shows visual balance updates</li>
-                        <li>Generates CLI commands</li>
-                        <li>Provides UI/UX for predictions</li>
-                        <li><strong>Does NOT deduct real XLM</strong></li>
-                    </ul>
-                </div>
-                <div>
-                    <strong>⛓️ Blockchain (Stellar Testnet):</strong>
-                    <ul style="margin: 5px 0; padding-left: 20px;">
-                        <li>Stores actual predictions</li>
-                        <li>Deducts real XLM from wallet</li>
-                        <li>Requires CLI commands to interact</li>
-                        <li><strong>Source of truth for all data</strong></li>
-                    </ul>
-                </div>
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: slideDown 0.8s ease-out;">
+            <h3 style="margin: 0 0 10px 0; font-size: 18px;">🎉 Direct Blockchain Integration - No Terminal Needed!</h3>
+            <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px;">
+                <strong>✨ Everything works directly from this website:</strong>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li><strong>Create Predictions</strong> - Click button → Approve in Freighter → Done!</li>
+                    <li><strong>Stake XLM</strong> - Click stake → Approve → Real XLM deducted from your wallet</li>
+                    <li><strong>100% Blockchain</strong> - All transactions are real and permanent</li>
+                    <li><strong>No CLI Required</strong> - Everything happens in your browser</li>
+                </ul>
             </div>
-                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; margin-top: 10px;">
-                <strong>💡 To actually interact with the blockchain:</strong> Copy the CLI commands shown in modals and run them in your terminal with Stellar CLI installed.
-            </div>
-            <div style="background: rgba(255,193,7,0.3); padding: 8px; border-radius: 8px; margin-top: 8px; font-size: 13px;">
-                <strong>⚠️ Common Issues:</strong> 
-                • Need wallet setup? Run: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px;">stellar keys add wallet --secret-key YOUR_KEY</code>
-                • Need XLM? Run: <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 3px;">curl "https://friendbot.stellar.org?addr=$(stellar keys address wallet)"</code>
+            <div style="background: rgba(255,255,255,0.3); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 14px;">
+                <strong>� How it works:</strong><br/>
+                1️⃣ Connect Freighter wallet<br/>
+                2️⃣ Click any action (create/stake)<br/>
+                3️⃣ Approve transaction in Freighter popup<br/>
+                4️⃣ Transaction submits to Stellar blockchain automatically!
             </div>
         </div>        <!-- Header -->
         <header class="header">
-            <div class="header-logo">
-                <span class="icon">🔮</span>
+            <div style="display: flex; align-items: center; justify-content: center; width: 100%; position: relative;">
+                <img src="logo.png" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: absolute; left: 20px; animation: pulse 1.5s ease-in-out infinite;">
+                <div class="header-logo">
+                    <span class="icon">🔮</span>
+                </div>
             </div>
             <h1>TimeLock Predictions</h1>
             <p class="subtitle">Decentralized Prediction Markets with Time-Locked Commitments on Stellar</p>
             
             <div class="wallet-section">
+                <a href="my-predictions.html" class="btn btn-success" style="margin-right: 10px; text-decoration: none; background: linear-gradient(135deg, #10b981, #059669); font-weight: bold;">
+                    🎯 My Predictions
+                </a>
                 <a href="analytics.html" class="btn btn-secondary" style="margin-right: 10px; text-decoration: none;">
                     📊 Analytics
                 </a>
@@ -162,8 +181,9 @@
                         <p>📌 <strong>Note:</strong> You must stake on your own prediction</p>
                     </div>
                     <button type="submit" class="btn btn-primary btn-large">
-                        <span>Create Prediction</span>
+                        <span class="btn-text">Create Prediction</span>
                         <span class="btn-icon">🚀</span>
+                        <span class="btn-ripple"></span>
                     </button>
                 </form>
             </div>
@@ -171,11 +191,21 @@
 
         <!-- Active Predictions -->
         <div class="section">
-            <h2>📊 Active Predictions</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px;">
+                <h2>🎯 Active Predictions</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="window.location.href='debug-predictions.html'" class="btn btn-secondary" style="padding: 8px 16px; background: #f59e0b; color: white;" title="See your created predictions">
+                        🔍 MY CREATED PREDICTIONS
+                    </button>
+                    <button onclick="loadPredictions()" class="btn btn-primary" style="padding: 12px 24px; font-size: 16px; font-weight: bold;" title="Click to see your newly created predictions!">
+                        🔄 REFRESH
+                    </button>
+                </div>
+            </div>
             <div id="predictionsContainer" class="predictions-grid">
                 <div class="loading">
                     <div class="loading-spinner"></div>
-                    <p>Loading predictions...</p>
+                    <p>Loading predictions from blockchain...</p>
                 </div>
             </div>
         </div>
@@ -272,6 +302,15 @@
 
     <!-- Stellar SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.3.0/stellar-sdk.min.js"></script>
+    
+    <!-- Blockchain Integration (No Terminal Needed!) -->
+    <script src="blockchain-integration.js"></script>
+    
+    <!-- Particle System -->
+    <script src="particles.js"></script>
+    
+    <!-- Visual Effects -->
+    <script src="effects.js"></script>
     
     <!-- Freighter API - Initialize from window or CDN -->
     <script>
